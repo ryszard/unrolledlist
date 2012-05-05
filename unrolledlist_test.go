@@ -5,6 +5,9 @@ import (
 	"fmt"
 )
 
+// Helper methods that give you more introspection into the list.
+
+// nodeLength returns the length of list l in nodes.
 func (l UnrolledList) nodeLength() int {
 	if l.next == nil {
 		return 1
@@ -19,31 +22,14 @@ func (l UnrolledList) repr() string {
 	return fmt.Sprintf("%v %v", l.elements, l.next.repr())
 }
 
-func TestAppendOneNode(t *testing.T) {
-	list := New(10)
-	for i := 0; i < 5; i++ {
+// newPopulatedList creates a new UnrolledList and appends integers
+// from 0 to n-1 to it.
+func newPopulatedList(capacity, n int) (list *UnrolledList) {
+	list = New(capacity)
+	for i := 0; i < n; i++ {
 		list.Append(i)
 	}
-
-	for i := 0; i < 5; i++ {
-		if value := list.Get(i); value != i {
-			t.Errorf("Wrong value for index %d: %v", i, value)
-		}
-	}
-
-}
-
-func TestMoreNodes(t *testing.T) {
-	list := New(3)
-	for i := 0; i < 5; i++ {
-		list.Append(i)
-	}
-	for i := 0; i < 5; i++ {
-		if value := list.Get(i); value != i {
-			t.Errorf("Wrong value for index %d: %v", i, value)
-		}
-	}
-
+	return
 }
 
 func ListLike(t *testing.T, list *UnrolledList, values ...int) {
@@ -51,20 +37,28 @@ func ListLike(t *testing.T, list *UnrolledList, values ...int) {
 	for i, wanted := range values {
 		if value := list.Get(i); value != wanted {
 			wasError = true
-			t.Errorf("Wrong value for index %d: %v (should be %v)", i, value, wanted)
+			t.Errorf("Wrong value for index %d: %v (should be %v).", i, value, wanted)
 		}
 	}
 	if wasError {
-		for l := list; l != nil; l = l.next {
-			t.Errorf("|", l.elements)
-		}
+		t.Errorf("(%v)", list.repr())
 	}
 }
 
+func TestAppendOneNode(t *testing.T) {
+	list := newPopulatedList(10, 5)
+	ListLike(t, list, 0, 1, 2, 3, 4)
+}
+
+func TestMoreNodes(t *testing.T) {
+	list := newPopulatedList(3, 5)
+	ListLike(t, list, 0, 1, 2, 3, 4)
+}
+
+
 func TestDowncaseInsert(t *testing.T) {
 	sl := make([]interface{}, 3, 3)
-	sl[0] = 0
-	sl[1] = 2
+	sl[0], sl[1] = 0, 2
 	sl = insert(sl, 1, 1)
 	if sl[0] != 0 || sl[1] != 1 || sl[2] != 2 {
 		t.Errorf("slice is not ordered: %v.", sl)
@@ -81,21 +75,13 @@ func TestInsertOneNode(t *testing.T) {
 }
 
 func TestInsertIntoLastNode(t *testing.T) {
-	list := New(4)
-
-	for i := 0; i < 7; i++ {
-		list.Append(i)
-	}
+	list := newPopulatedList(4, 7)
 	list.Insert(6, 1000)
 	ListLike(t, list, 0, 1, 2, 3, 4, 5, 1000, 6)
 }
 
 func TestInsertIntoMiddleNode(t *testing.T) {
-	list := New(3)
-
-	for i := 0; i < 7; i++ {
-		list.Append(i)
-	}
+	list := newPopulatedList(3, 7)
 	list.Insert(3, 1000)
 	ListLike(t, list, 0, 1, 2, 1000, 3, 4, 5, 6)
 }
@@ -108,10 +94,7 @@ func TestInsertOutOfBounds(t *testing.T) {
 }
 
 func TestIteration(t *testing.T) {
-	list := New(3)
-	for i := 0; i < 10; i++ {
-		list.Append(i)
-	}
+	list := newPopulatedList(3, 10)
 	wanted := 0
 	for el := range list.Iter() {
 		if wanted != el {
@@ -136,10 +119,7 @@ func TestSliceDelete(t *testing.T) {
 }
 
 func TestPopSimple(t *testing.T) {
-	list := New(5)
-	list.Append(0)
-	list.Append(1)
-	list.Append(2)
+	list := newPopulatedList(5, 3)
 
 	nodeLength := list.nodeLength()
 
@@ -153,10 +133,7 @@ func TestPopSimple(t *testing.T) {
 }
 
 func TestPopNotInFirstNode(t *testing.T) {
-	list := New(3)
-	for i := 0; i < 10; i++ {
-		list.Append(i)
-	}
+	list := newPopulatedList(3, 10)
 
 	nodeLength := list.nodeLength()
 
@@ -171,15 +148,13 @@ func TestPopNotInFirstNode(t *testing.T) {
 }
 
 func TestPopNodeMoveElementsFromAdjacent(t *testing.T) {
-	list := New(4)
-	for i := 0; i < 8; i++ {
-		list.Append(i)
-	}
+	list := newPopulatedList(4, 8)
 	// [0, 1, 2, 3], [4, 5, 6, 7]
-	list.Pop(0)
-	list.Pop(0) // after: [2, 3], [4, 5, 6, 7]
 
-	list.Pop(0) // after: [3, 4] [5, 6, 7]
+	for i := 0; i < 3; i++ {
+		list.Pop(0)
+	}
+
 	if l1, l2 := len(list.elements), len(list.next.elements); l1 != 2 || l2 != 3 {
 		t.Errorf("The layout of the elements is wrong. It should be ([3 4] [5 6 7]), (%v) found.", list.repr())
 	}
@@ -188,10 +163,7 @@ func TestPopNodeMoveElementsFromAdjacent(t *testing.T) {
 }
 
 func TestPopNodeMoveElementsWithMerge(t *testing.T) {
-	list := New(4)
-	for i := 0; i < 12; i++ {
-		list.Append(i)
-	}
+	list := newPopulatedList(4, 12)
 	if nl := list.nodeLength(); nl != 3 {
 		t.Errorf("The node length isn't 3: %v", nl)
 	}
@@ -207,20 +179,14 @@ func TestPopNodeMoveElementsWithMerge(t *testing.T) {
 
 }
 
-// TODO: Pop for last cell
-
 func TestOutOfBounds(t *testing.T) {
-	list := New(3)
-	for i := 0; i < 10; i++ {
-		list.Append(i)
-	}
+	list := newPopulatedList(3, 10)
 
 	if el := list.Pop(100); el != nil {
 		t.Errorf("Out of bound element should be nil, not %v", el)
 	}
 
-	list = New(3)
-	list.Append(0)
+	list = newPopulatedList(3, 1)
 	if el := list.Pop(1); el != nil {
 		t.Errorf("Out of bound element should be nil, not %v", el)
 	}
@@ -236,7 +202,7 @@ func TestLength(t *testing.T) {
 		list.Append(i)
 	}
 	if l := list.Length(); l != 10 {
-
+		t.Errorf("Wrong length: %v instead of 10.", l)
 	}
 
 }
