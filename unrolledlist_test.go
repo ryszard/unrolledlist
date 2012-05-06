@@ -55,7 +55,6 @@ func TestMoreNodes(t *testing.T) {
 	ListLike(t, list, 0, 1, 2, 3, 4)
 }
 
-
 func TestDowncaseInsert(t *testing.T) {
 	sl := make([]interface{}, 3, 3)
 	sl[0], sl[1] = 0, 2
