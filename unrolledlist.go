@@ -64,6 +64,8 @@ func (l UnrolledList) Iter() chan interface{} {
 	return ch
 }
 
+// growDividing adds a new node after l, and puts half of l's elements
+// into the new node.
 func (l *UnrolledList) growDividing() {
 	l.grow()
 	half := len(l.elements) / 2
@@ -84,6 +86,8 @@ func (l UnrolledList) Get(i int) interface{} {
 	return nil
 }
 
+// insert is a helper function that inserts value at the i-th position
+// in the slice sl. If 
 func insert(sl []interface{}, i int, value interface{}) []interface{} {
 	sl = append(sl[:i], append([]interface{}{value}, sl[i:]...)...)
 	return sl
@@ -95,7 +99,7 @@ func sliceDelete(sl []interface{}, i int) (interface{}, []interface{}) {
 }
 
 // Insert inserts value at position i in the list l. If i >
-// l.Length(), reuturn ErrOutOfBound.
+// l.Length(), return ErrOutOfBound.
 func (l *UnrolledList) Insert(i int, value interface{}) error {
 	switch {
 	case i >= len(l.elements):
