@@ -139,15 +139,20 @@ func (l *UnrolledList) rebalance() {
 
 // Delete and return the ith element of l. If i is out of bound,
 // returns nil.
-func (l *UnrolledList) Pop(i int) (popped interface{}) {
+func (l *UnrolledList) PopAt(i int) (popped interface{}) {
 	length := len(l.elements)
 	if i < length {
 		popped, l.elements = sliceDelete(l.elements, i)
 		l.rebalance()
 	} else if l.next != nil {
-		return l.next.Pop(i - length)
+		return l.next.PopAt(i - length)
 	}
 	return
+}
+
+// Delete and return the first element of l.
+func (l *UnrolledList) Pop() (popped interface{}) {
+	return l.PopAt(0)
 }
 
 // Return an empty Unrolled Linked List that will contain capacity

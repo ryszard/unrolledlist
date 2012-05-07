@@ -122,7 +122,7 @@ func TestPopSimple(t *testing.T) {
 
 	nodeLength := list.nodeLength()
 
-	if el := list.Pop(1); el != 1 {
+	if el := list.PopAt(1); el != 1 {
 		t.Errorf("Got %v, expected 1.", el)
 	}
 	ListLike(t, list, 0, 2)
@@ -136,7 +136,7 @@ func TestPopNotInFirstNode(t *testing.T) {
 
 	nodeLength := list.nodeLength()
 
-	if el := list.Pop(5); el != 5 {
+	if el := list.PopAt(5); el != 5 {
 		t.Errorf("Got %v, expected 1", el)
 	}
 	ListLike(t, list, 0, 1, 2, 3, 4, 6, 7, 8, 9)
@@ -151,7 +151,7 @@ func TestPopNodeMoveElementsFromAdjacent(t *testing.T) {
 	// [0, 1, 2, 3], [4, 5, 6, 7]
 
 	for i := 0; i < 3; i++ {
-		list.Pop(0)
+		list.Pop()
 	}
 
 	if l1, l2 := len(list.elements), len(list.next.elements); l1 != 2 || l2 != 3 {
@@ -168,7 +168,7 @@ func TestPopNodeMoveElementsWithMerge(t *testing.T) {
 	}
 
 	for i := 0; i < 4; i++ {
-		list.Pop(0)
+		list.Pop()
 	}
 	if nl, l1, l2 := list.nodeLength(), len(list.elements), len(list.next.elements); nl != 2 || l1 != 4 || l2 != 4 {
 		t.Errorf("The layout of the elements is wrong. It should be ([4 5 6 7] [8 9 10 11]), (%v) found.", list.repr())
@@ -181,12 +181,12 @@ func TestPopNodeMoveElementsWithMerge(t *testing.T) {
 func TestOutOfBounds(t *testing.T) {
 	list := newPopulatedList(3, 10)
 
-	if el := list.Pop(100); el != nil {
+	if el := list.PopAt(100); el != nil {
 		t.Errorf("Out of bound element should be nil, not %v.", el)
 	}
 
 	list = newPopulatedList(3, 1)
-	if el := list.Pop(1); el != nil {
+	if el := list.PopAt(1); el != nil {
 		t.Errorf("Out of bound element should be nil, not %v.", el)
 	}
 
@@ -208,8 +208,8 @@ func TestLen(t *testing.T) {
 
 func TestAppendReallyAppends(t *testing.T) {
 	list := newPopulatedList(5, 10)
-	list.Pop(0)
-	list.Pop(0)
+	list.Pop()
+	list.Pop()
 	if l := list.nodeLength(); l != 2 {
 		t.Errorf("Expected to see two nodes.Seen %d: %v", l, list.repr())
 	}
