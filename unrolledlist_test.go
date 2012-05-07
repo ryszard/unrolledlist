@@ -123,11 +123,11 @@ func TestPopSimple(t *testing.T) {
 	nodeLength := list.nodeLength()
 
 	if el := list.Pop(1); el != 1 {
-		t.Errorf("Got %v, expected 1", el)
+		t.Errorf("Got %v, expected 1.", el)
 	}
 	ListLike(t, list, 0, 2)
 	if newNodeLength := list.nodeLength(); newNodeLength != nodeLength {
-		t.Errorf("Node length has changed even though it shouldn't have: %v, not %v", newNodeLength, nodeLength)
+		t.Errorf("Node length has changed even though it shouldn't have: %v, not %v.", newNodeLength, nodeLength)
 	}
 }
 
@@ -141,7 +141,7 @@ func TestPopNotInFirstNode(t *testing.T) {
 	}
 	ListLike(t, list, 0, 1, 2, 3, 4, 6, 7, 8, 9)
 	if newNodeLength := list.nodeLength(); newNodeLength != nodeLength {
-		t.Errorf("Node length has changed even though it shouldn't have: %v, not %v", newNodeLength, nodeLength)
+		t.Errorf("Node length has changed even though it shouldn't have: %v, not %v.", newNodeLength, nodeLength)
 	}
 
 }
@@ -182,12 +182,12 @@ func TestOutOfBounds(t *testing.T) {
 	list := newPopulatedList(3, 10)
 
 	if el := list.Pop(100); el != nil {
-		t.Errorf("Out of bound element should be nil, not %v", el)
+		t.Errorf("Out of bound element should be nil, not %v.", el)
 	}
 
 	list = newPopulatedList(3, 1)
 	if el := list.Pop(1); el != nil {
-		t.Errorf("Out of bound element should be nil, not %v", el)
+		t.Errorf("Out of bound element should be nil, not %v.", el)
 	}
 
 }
@@ -204,4 +204,16 @@ func TestLength(t *testing.T) {
 		t.Errorf("Wrong length: %v instead of 10.", l)
 	}
 
+}
+
+func TestAppendReallyAppends(t *testing.T) {
+	list := newPopulatedList(5, 10)
+	list.Pop(0)
+	list.Pop(0)
+	if l := list.nodeLength(); l != 2 {
+		t.Errorf("Expected to see two nodes.Seen %d: %v", l, list.repr())
+	}
+
+	list.Append(1000)
+	ListLike(t, list, 2, 3, 4, 5, 6, 7, 8, 9, 1000)
 }

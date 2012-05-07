@@ -25,7 +25,7 @@ func (l UnrolledList) Length() int {
 
 // Append makes value the last element of l.
 func (l *UnrolledList) Append(value interface{}) {
-	if length := len(l.elements); length < cap(l.elements) {
+	if length := len(l.elements); l.next == nil && length < cap(l.elements) {
 		l.elements = append(l.elements, value)
 	} else {
 		if l.next == nil {
