@@ -35,9 +35,13 @@ func newPopulatedList(capacity, n int) (list *UnrolledList) {
 func ListLike(t *testing.T, list *UnrolledList, values ...int) {
 	wasError := false
 	for i, wanted := range values {
-		if value := list.Get(i); value != wanted {
+		if value, ok := list.Get(i); value != wanted {
 			wasError = true
-			t.Errorf("Wrong value for index %d: %v (should be %v).", i, value, wanted)
+			if ok {
+				t.Errorf("Wrong value for index %d: %v (should be %v).", i, value, wanted)
+			} else {
+				t.Errorf("Nothing at index %d (should be %v).", i, wanted)
+			}
 		}
 	}
 	if wasError {

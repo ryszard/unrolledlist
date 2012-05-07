@@ -73,17 +73,17 @@ func (l *UnrolledList) growDividing() {
 	l.elements = l.elements[:half]
 }
 
-// Get returns the element in the i-th position in l. If i >
-// l.Len(), return nil.
-func (l UnrolledList) Get(i int) interface{} {
+// Get returns the element in the i-th position in l and nil if i <
+// l.Len(). ok is true if a value form l was returned.
+func (l UnrolledList) Get(i int) (value interface{}, ok bool) {
 	length := len(l.elements)
 	switch {
 	case i < length:
-		return l.elements[i]
+		return l.elements[i], true
 	case l.next != nil:
 		return l.next.Get(i - length)
 	}
-	return nil
+	return nil, false
 }
 
 // insert is a helper function that inserts value at the i-th position
