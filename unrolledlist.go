@@ -15,12 +15,12 @@ type UnrolledList struct {
 	elements []interface{}
 }
 
-// Length Returns the length of l.
-func (l UnrolledList) Length() int {
+// Len Returns the length of l.
+func (l UnrolledList) Len() int {
 	if l.next == nil {
 		return len(l.elements)
 	}
-	return len(l.elements) + l.next.Length()
+	return len(l.elements) + l.next.Len()
 }
 
 // Append makes value the last element of l.
@@ -74,7 +74,7 @@ func (l *UnrolledList) growDividing() {
 }
 
 // Get returns the element in the i-th position in l. If i >
-// l.Length(), return nil.
+// l.Len(), return nil.
 func (l UnrolledList) Get(i int) interface{} {
 	length := len(l.elements)
 	switch {
@@ -99,7 +99,7 @@ func sliceDelete(sl []interface{}, i int) (interface{}, []interface{}) {
 }
 
 // Insert inserts value at position i in the list l. If i >
-// l.Length(), return ErrOutOfBound.
+// l.Len(), return ErrOutOfBound.
 func (l *UnrolledList) Insert(i int, value interface{}) error {
 	switch {
 	case i >= len(l.elements):

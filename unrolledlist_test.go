@@ -192,15 +192,15 @@ func TestOutOfBounds(t *testing.T) {
 
 }
 
-func TestLength(t *testing.T) {
+func TestLen(t *testing.T) {
 	list := New(3)
-	if l := list.Length(); l != 0 {
+	if l := list.Len(); l != 0 {
 		t.Errorf("An empty list should have length 0, not %v.", l)
 	}
 	for i := 0; i < 10; i++ {
 		list.Append(i)
 	}
-	if l := list.Length(); l != 10 {
+	if l := list.Len(); l != 10 {
 		t.Errorf("Wrong length: %v instead of 10.", l)
 	}
 
