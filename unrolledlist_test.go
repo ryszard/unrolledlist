@@ -126,7 +126,7 @@ func TestPopSimple(t *testing.T) {
 
 	nodeLength := list.nodeLength()
 
-	if el := list.PopAt(1); el != 1 {
+	if el := list.Remove(1); el != 1 {
 		t.Errorf("Got %v, expected 1.", el)
 	}
 	ListLike(t, list, 0, 2)
@@ -140,7 +140,7 @@ func TestPopNotInFirstNode(t *testing.T) {
 
 	nodeLength := list.nodeLength()
 
-	if el := list.PopAt(5); el != 5 {
+	if el := list.Remove(5); el != 5 {
 		t.Errorf("Got %v, expected 1", el)
 	}
 	ListLike(t, list, 0, 1, 2, 3, 4, 6, 7, 8, 9)
@@ -185,12 +185,12 @@ func TestPopNodeMoveElementsWithMerge(t *testing.T) {
 func TestOutOfBounds(t *testing.T) {
 	list := newPopulatedList(3, 10)
 
-	if el := list.PopAt(100); el != nil {
+	if el := list.Remove(100); el != nil {
 		t.Errorf("Out of bound element should be nil, not %v.", el)
 	}
 
 	list = newPopulatedList(3, 1)
-	if el := list.PopAt(1); el != nil {
+	if el := list.Remove(1); el != nil {
 		t.Errorf("Out of bound element should be nil, not %v.", el)
 	}
 

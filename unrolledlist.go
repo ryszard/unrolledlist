@@ -74,7 +74,7 @@ func (l *UnrolledList) growDividing() {
 }
 
 // Get returns the element in the i-th position in l and nil if i <
-// l.Len(). ok is true if a value form l was returned.
+// l.Len(). ok is true if a value from l was returned.
 func (l UnrolledList) Get(i int) (value interface{}, ok bool) {
 	length := len(l.elements)
 	switch {
@@ -139,20 +139,20 @@ func (l *UnrolledList) rebalance() {
 
 // Delete and return the ith element of l. If i is out of bound,
 // returns nil.
-func (l *UnrolledList) PopAt(i int) (popped interface{}) {
+func (l *UnrolledList) Remove(i int) (popped interface{}) {
 	length := len(l.elements)
 	if i < length {
 		popped, l.elements = sliceDelete(l.elements, i)
 		l.rebalance()
 	} else if l.next != nil {
-		return l.next.PopAt(i - length)
+		return l.next.Remove(i - length)
 	}
 	return
 }
 
 // Delete and return the first element of l.
 func (l *UnrolledList) Pop() (popped interface{}) {
-	return l.PopAt(0)
+	return l.Remove(0)
 }
 
 // Return an empty Unrolled Linked List that will contain capacity
