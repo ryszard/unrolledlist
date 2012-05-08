@@ -23,15 +23,15 @@ func (l UnrolledList) Len() int {
 	return len(l.elements) + l.next.Len()
 }
 
-// Append makes value the last element of l.
-func (l *UnrolledList) Append(value interface{}) {
+// PushBack makes value the last element of l.
+func (l *UnrolledList) PushBack(value interface{}) {
 	if l.next == nil && len(l.elements) < cap(l.elements) {
 		l.elements = append(l.elements, value)
 	} else {
 		if l.next == nil {
 			l.grow()
 		}
-		l.next.Append(value)
+		l.next.PushBack(value)
 	}
 }
 

@@ -27,7 +27,7 @@ func (l UnrolledList) repr() string {
 func newPopulatedList(capacity, n int) (list *UnrolledList) {
 	list = New(capacity)
 	for i := 0; i < n; i++ {
-		list.Append(i)
+		list.PushBack(i)
 	}
 	return
 }
@@ -49,7 +49,7 @@ func ListLike(t *testing.T, list *UnrolledList, values ...int) {
 	}
 }
 
-func TestAppendOneNode(t *testing.T) {
+func TestPushBackOneNode(t *testing.T) {
 	list := newPopulatedList(10, 5)
 	ListLike(t, list, 0, 1, 2, 3, 4)
 }
@@ -70,8 +70,8 @@ func TestDowncaseInsert(t *testing.T) {
 
 func TestInsertOneNode(t *testing.T) {
 	list := New(5)
-	list.Append(0)
-	list.Append(2)
+	list.PushBack(0)
+	list.PushBack(2)
 	list.Insert(1, 1)
 	ListLike(t, list, 0, 1, 2)
 
@@ -202,7 +202,7 @@ func TestLen(t *testing.T) {
 		t.Errorf("An empty list should have length 0, not %v.", l)
 	}
 	for i := 0; i < 10; i++ {
-		list.Append(i)
+		list.PushBack(i)
 	}
 	if l := list.Len(); l != 10 {
 		t.Errorf("Wrong length: %v instead of 10.", l)
@@ -210,7 +210,7 @@ func TestLen(t *testing.T) {
 
 }
 
-func TestAppendReallyAppends(t *testing.T) {
+func TestPushBackReallyAppends(t *testing.T) {
 	list := newPopulatedList(5, 10)
 	list.Pop()
 	list.Pop()
@@ -218,6 +218,6 @@ func TestAppendReallyAppends(t *testing.T) {
 		t.Errorf("Expected to see two nodes.Seen %d: %v", l, list.repr())
 	}
 
-	list.Append(1000)
+	list.PushBack(1000)
 	ListLike(t, list, 2, 3, 4, 5, 6, 7, 8, 9, 1000)
 }
